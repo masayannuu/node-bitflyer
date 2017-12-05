@@ -45,7 +45,7 @@ client.getMarkets().then((res) => { console.log(res) })
 ```
 
 ### Sorry, Now I have defined only the list below.  
-### I will set up an issue and I will add it now.
+### I will create issues and I will add it now.
 
 ## REST(public)
 
@@ -57,6 +57,11 @@ client.getMarkets().then((res) => { console.log(res) })
 - getPermissions(/me/getpermissions)
 - getBalance(/me/getbalance)
 - sendChildOrder(/me/sendchildorder)
+
+
+## RealtimeAPI  
+
+Not implemented now and create an issue.
 
 ## Contributing  
 
