@@ -3,7 +3,9 @@ jobs:
   build:
     docker:
       - image: circleci/node:8.6
-    working_directory: ~/repo
+    environment:
+      CC_TEST_REPORTER_ID: 8b1e5f2ca915001b0646ba310c2c8a45cc126b03320c55741bea05eed592dc8e
+    working_directory: ~/node-bitflyer
     steps:
       - checkout
 
@@ -24,5 +26,14 @@ jobs:
             - node_modules/
 
       - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      - run:
           name: test
-          command: npm test
+          command: |
+            ./cc-test-reporter before-build
+            npm test
+            ./cc-test-reporter after-build -t lcov --exit-code $?
