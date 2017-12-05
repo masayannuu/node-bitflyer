@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/node:8.6
     environment:
-      CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID
+      CC_TEST_REPORTER_ID: 8b1e5f2ca915001b0646ba310c2c8a45cc126b03320c55741bea05eed592dc8e
     working_directory: ~/node-bitflyer
     steps:
       - checkout
