@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "js-yaml": "^3.10.0",
-    "pubnub": "^4.18.0"
+    "pubnub": "^4.18.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
   }
 }
