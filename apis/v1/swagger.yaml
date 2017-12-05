@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: BitFlyer REST API
+  description: BitFlyer API. Document is [here](https://lightning.bitflyer.jp/docs?lang=en).
+  version: 1.0.0
+
+servers:
+  - url: https://api.bitflyer.{domain}/{version}
+    description: The main prod server
+    variables:
+      domain:
+        enum:
+          - jp
+          - com
+        default: jp
+      version:
+        enum:
+          - v1
+        default: v1
+
+paths:
+  /markets:
+    get:
+      summary: Returns a list of markets.
+      description: You can use an alias instead of a product_code when performing the call below
+      operationId: getMarkets
+      responses:
+        '200':
+          description: A JSON array of market lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/markets'
+  /board:
+    get:
+      summary: Returns a list of order book.
+      operationId: getBoard
+      parameters:
+        - in: query
+          name: product_code
+          schema:
+            type: string
+          description: Please specify a product_code or alias, as obtained from the Market List. If omitted, the value is set to "BTC_JPY". Only "BTC_USD" is available for U.S. accounts
+      responses:
+        '200':
+          description: A JSON array of order books
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/board'
+  /me/getpermissions:
+    get:
+      summary: Rerutns a list of API key permmision
+      security:
+        - apiKey: []
+        - timestamp: []
+        - sign: []
+      operationId: getPermissions
+      responses:
+        '200':
+          description: A JSON array of path with permission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/permissions'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /me/getbalance:
+    get:
+      summary: Rerutns asset balance
+      security:
+        - apiKey: []
+        - timestamp: []
+        - sign: []
+      operationId: getBalance
+      responses:
+        '200':
+          description: A JSON array of asset balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/balance'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /me/sendchildorder:
+    post:
+      summary: Send a New Order
+      security:
+        - apiKey: []
+        - timestamp: []
+        - sign: []
+      operationId: sendChildOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/childorder'
+        required: true
+      responses:
+        '200':
+          description: A JSON array of asset balance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  child_order_acceptance_id:
+                    type: string
+                    description: This is the ID for the API. To specify the order to return, please use this instead of child_order_id. Please confirm the item is either Cancel Order or Obtain Execution List.
+                example:
+                  child_order_acceptance_id: JRF20150707-050237-639234
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    markets:
+      type: array
+      items:
+        type: object
+        properties:
+          product_code:
+            type: string
+            example: BTCJPY28APR2017
+          alias:
+            type: string
+            example: BTCJPY_MAT1WK
+    board:
+      type: array
+      items:
+        type: object
+        properties:
+          mid_price:
+            type: integer
+            example: 922109.0
+          bids:
+            type: array
+            items:
+              type: object
+              properties:
+                price:
+                  type: integer
+                  example: 922030.0
+                size:
+                  type: number
+                  format: float
+                  example: 0.22
+          asks:
+            type: array
+            items:
+              type: object
+              properties:
+                price:
+                  type: integer
+                  example: 922189.0
+                size:
+                  type: number
+                  format: float
+                  example: 0.1
+    permissions:
+      type: array
+      items:
+        type: string
+      example: ["/v1/me/getpermissions","/v1/me/getbalance", "/v1/me/getcollateral","/v1/me/getchildorders"]
+    balance:
+      type: array
+      items:
+        type: object
+        properties:
+          currency_code:
+            type: string
+          amount:
+            type: number
+            format: float
+          available:
+            type: number
+            format: float
+        example:
+          currency_code: JPY
+          amount: 1024078
+          available: 508000
+    childorder:
+      type: object
+      required:
+        - product_code
+        - child_order_type
+        - side
+        - size
+      properties:
+        product_code:
+          type: string
+          description: The product being ordered. Please specify a product_code or alias, as obtained from the Market List. Only "BTC_USD" is available for U.S. accounts.
+        child_order_type:
+          type: string
+          description: For limit orders, it will be "LIMIT". For market orders, "MARKET".
+        side:
+          type: string
+          description: For buy orders, "BUY". For sell orders, "SELL".
+        price:
+          type: number
+          format: float
+          description: Specify the price. This is a required value if child_order_type has been set to "LIMIT".
+        size:
+          type: number
+          format: float
+          description: Specify the order quantity.
+        minute_to_expire:
+          type: integer
+          description: Specify the time in minutes until the expiration time. If omitted, the value will be 43200 (30 days).
+        time_in_force:
+          type: string
+          description: Specify any of the following execution conditions - "GTC", "IOC", or "FOK". If omitted, the value defaults to "GTC".
+      example:
+        product_code: BTC_JPY
+        child_order_type: LIMIT
+        side: BUY
+        price: 30000
+        size: 0.1
+        minute_to_expire: 10000
+        time_in_force: GTC
+
+  responses:
+    UnauthorizedError:
+      description: API key is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: ACCESS-KEY
+      description: YOUR API KEY
+    timestamp:
+      type: apiKey
+      in: header
+      name: ACCESS-TIMESTAMP
+      description: timestamp
+    sign:
+      type: apiKey
+      in: header
+      name: ACCESS-SIGN
+      description: Encrypt with your API secret with text( 'timestamp','method','path','body' combined) with sha256
