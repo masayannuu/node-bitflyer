@@ -4,7 +4,7 @@
   "description": "BitFlyer SDK",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha"
+    "test": "nyc --reporter=lcov --reporter=text-lcov mocha"
   },
   "repository": {
     "type": "git",
