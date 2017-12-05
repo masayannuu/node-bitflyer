@@ -1,0 +1,24 @@
+{
+  "name": "node-bitflyer",
+  "version": "1.0.0",
+  "description": "BitFlyer SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masayannuu/node-bitflyer.git"
+  },
+  "keywords": [
+    "bitflyer",
+    "BitFlyer",
+    "SDK"
+  ],
+  "author": "Masaya Morimoto",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/masayannuu/node-bitflyer/issues"
+  },
+  "homepage": "https://github.com/masayannuu/node-bitflyer#readme"
+}
