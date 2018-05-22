@@ -22,13 +22,14 @@
   },
   "homepage": "https://github.com/masayannuu/node-bitflyer#readme",
   "devDependencies": {
-    "mocha": "^4.0.1",
-    "nyc": "^11.3.0"
+    "mocha": "^4.1.0",
+    "nyc": "^11.8.0"
   },
   "dependencies": {
-    "js-yaml": "^3.10.0",
-    "pubnub": "^4.18.0",
-    "request": "^2.83.0",
+    "js-yaml": "^3.11.0",
+    "npm": "^6.0.1",
+    "pubnub": "^4.20.3",
+    "request": "^2.87.0",
     "request-promise": "^4.2.2"
   }
 }
